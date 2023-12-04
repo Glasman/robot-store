@@ -45,6 +45,10 @@ const syncAndSeed = async() => {
   console.log('tables created')
 
   const bender = await createRobot('Bender', 'bending unit', 'moms friendly robot corp', 'https://imgur.com/t/bender/o4jg3M4', 1, false, '2023-12-04')
+  const roboman = await createRobot('Roboman', 'friend unit', 'Glasman Roboco', 'https://imgur.com/t/megaman/iCPzV66', 600, true, '2020-12-01')
+  const roomba = await createRobot('Roomba', 'vacuum unit', 'iRobot', 'https://i.imgur.com/0lqkPqV.jpeg', 12, false, '1999-12-31')
+
+  client.end();
 }
 
 syncAndSeed();
