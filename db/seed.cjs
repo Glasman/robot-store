@@ -1,6 +1,9 @@
 const client = require('./client.cjs');
 const { createRobot } = require('./robots.cjs');
 const { createTask } = require('./tasks.cjs');
+const { createRobotTask } = require('./robottasks.cjs')
+const { createCustomer } = require('./customers.cjs')
+const { createRobotCustomer } = require('./robotscustomers.cjs')
 
  
 const createTables = async() => {
@@ -19,12 +22,23 @@ const createTables = async() => {
 
     CREATE TABLE tasks (
       id SERIAL PRIMARY KEY,
-      name VARCHAR(30)
+      name VARCHAR(30) NOT NULL
+    );
+
+    CREATE TABLE customers (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(30) NOT NULL,
+      email VARCHAR(40) NOT NULL
     );
 
     CREATE TABLE robottasks (
-      robotid int REFERENCES robots(id),
-      taskid int REFERENCES tasks(id)
+      robotid INT REFERENCES robots(id),
+      taskid INT REFERENCES tasks(id)
+    );
+
+    CREATE TABLE robotcustomers (
+      robotid INT REFERENCES robots(id),
+      customerid INT REFERENCES customers(id)
     )
     `)
   } catch(err) {
@@ -36,6 +50,8 @@ const dropTables = async() => {
   try {
     await client.query(`
     DROP TABLE IF EXISTS robottasks;
+    DROP TABLE IF EXISTS robotcustomers;
+    DROP TABLE IF EXISTS customers;
     DROP TABLE IF EXISTS robots;
     DROP TABLE IF EXISTS tasks;
     `)
@@ -66,6 +82,21 @@ const syncAndSeed = async() => {
   const bending = await createTask('Bending')
   const vacuuming = await createTask('Vacuuming')
   const friend = await createTask('Being a friend')
+
+  await createRobotTask(bender.id, bending.id);
+  await createRobotTask(helpbot.id, bending.id);
+  await createRobotTask(helpbot.id, vacuuming.id);
+  await createRobotTask(helpbot.id, friend.id);
+  await createRobotTask(roboman.id, friend.id);
+  await createRobotTask(roomba.id, vacuuming.id);
+
+  const fred = await createCustomer('Fred', 'fred@yahoo.com')
+  const greg = await createCustomer('Greg', 'greg@gmail.com')
+
+  await createRobotCustomer(helpbot.id, fred.id);
+  await createRobotCustomer(roboman.id, greg.id);
+  await createRobotCustomer(roomba.id, greg.id);
+  
   client.end();
 }
 
