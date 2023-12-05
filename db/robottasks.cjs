@@ -8,7 +8,7 @@ const createrobottask = async(robotid, taskid) => {
     VALUES ($1, $2)
     RETURNING *;
     `);
-    return robottasks;
+    return robottask;
   } catch(err) {
     console.log(err);
   }
